@@ -13,6 +13,11 @@
 </head>
 <body>
 <h1>Hello <c:out value="${user.login}"/>!</h1>
-<a href="/logout"><button>LOGOUT</button></a><br><br>
+<c:choose>
+    <c:when test="${sessionScope.user.getRole().equals('admin')}">
+        <a href="/admin"><button>USERS LIST</button></a><br><br>
+    </c:when>
+</c:choose>
+<a href="/logout"><button>LOGOUT</button></a>
 </body>
 </html>

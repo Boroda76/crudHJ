@@ -168,7 +168,7 @@ public class UserDaoJDBCImpl implements UserDAO {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user) throws UserException{
 
         try {
             connection.setAutoCommit(false);
@@ -193,7 +193,12 @@ public class UserDaoJDBCImpl implements UserDAO {
                 System.out.println("Rollback failed");
                 ex.printStackTrace();
             }
-            e.printStackTrace();
+            finally {
+                e.printStackTrace();
+                throw new UserException(e.getMessage());
+
+            }
+
         } finally {
             try {
                 statement.close();
@@ -201,6 +206,7 @@ public class UserDaoJDBCImpl implements UserDAO {
                 System.out.println("Statement closing failed");
                 ex.printStackTrace();
             }
+
         }
     }
 

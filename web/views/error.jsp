@@ -13,6 +13,6 @@
 </head>
 <body>
 <h1><c:out value="${message}"/></h1>
-<a href="./">Back to users list</a>
+<a href="/admin">Back to users list</a>
 </body>
 </html>

@@ -43,16 +43,21 @@ public class UserServletUpdate extends HttpServlet {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/create.jsp");
         String id = req.getParameter("id");
         if (id != null) {
-            service.updateUser(new User(Long.parseLong(id), req.getParameter("login"),
-                    req.getParameter("email"),
-                    req.getParameter("password"),
-                    Boolean.parseBoolean(req.getParameter("sex")),
-                    Integer.parseInt(req.getParameter("age")),
-                    Double.parseDouble(req.getParameter("weight")),
-                    Double.parseDouble(req.getParameter("height")),
-                    req.getParameter("role")));
+            try {
+                service.updateUser(new User(Long.parseLong(id), req.getParameter("login"),
+                        req.getParameter("email"),
+                        req.getParameter("password"),
+                        Boolean.parseBoolean(req.getParameter("sex")),
+                        Integer.parseInt(req.getParameter("age")),
+                        Double.parseDouble(req.getParameter("weight")),
+                        Double.parseDouble(req.getParameter("height")),
+                        req.getParameter("role")));
 //            res.getWriter().println("<body>User updated<br><a href=\"./\">Back to users list</a>");
-            res.sendRedirect("/admin");
+                res.sendRedirect("/admin");
+            } catch (UserException e){
+                req.setAttribute("message", e.getMessage());
+                dispatcher.forward(req, res);
+            }
         } else {
             try {
                 service.createUser(new User(0L, req.getParameter("login"),

@@ -7,8 +7,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-@WebFilter(urlPatterns = {"/admin/*", "/user", "/", "/login"})
-public class UserFilterRole implements Filter {
+
+@SuppressWarnings("all")
+@WebFilter("/user")
+public class UserFilterUserPage implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -16,22 +18,20 @@ public class UserFilterRole implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req=(HttpServletRequest) request;
-        HttpServletResponse res=(HttpServletResponse) response;
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         try {
             User user = (User) req.getSession().getAttribute("user");
             String role = user.getRole();
-            if (role.equals("admin")) chain.doFilter(request, response);
+            if ("admin".equals(role)) chain.doFilter(request, response);
             else {
-                String[] ref=req.getHeaders("Referer").nextElement().split(":8080");
-                if (ref.length==1|!ref[1].equals("/user?id=" + user.getId())) {
-                    RequestDispatcher dispatcher=req.getRequestDispatcher("/views/user.jsp");
-                    dispatcher.forward(req, res);
-                } else {
+                if (("/user?id=" + user.getId()).equals(req.getHeaders("Referer").nextElement().split(":8080")[1])) {
                     chain.doFilter(request, response);
+                } else {
+                    res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You have no rights to see this page!");
                 }
             }
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             req.setAttribute("message", "You should login first!");
             RequestDispatcher dispatcher = req.getRequestDispatcher("/");
             dispatcher.forward(req, res);

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet({"/admin"})
+@WebServlet({"/admin", "/admin/"})
 public class UserServletIndex extends HttpServlet {
     private UserService service;
 
@@ -23,7 +23,7 @@ public class UserServletIndex extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         req.setAttribute("users", service.getAll());
-        RequestDispatcher dispatcher = req.getRequestDispatcher("views/index.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/views/index.jsp");
         dispatcher.forward(req, res);
     }
 }

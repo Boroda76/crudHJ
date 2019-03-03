@@ -79,14 +79,22 @@ public class UserDaoHibernateImpl implements UserDAO {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user) throws UserException{
+        try {
+
+
         Transaction tx;
         session = factory.openSession();
         session.replicate(user, ReplicationMode.OVERWRITE);
         tx = session.beginTransaction();
         session.flush();
         tx.commit();
-        session.close();
+        } catch (Exception e){
+            throw new UserException(e.getCause().getCause().getMessage());
+        } finally {
+
+            session.close();
+        }
     }
 
     @Override
@@ -99,7 +107,7 @@ public class UserDaoHibernateImpl implements UserDAO {
             session.flush();
             tx.commit();
         }catch (Exception e){
-            throw new UserException(e.getMessage());
+            throw new UserException(e.getCause().getCause().getMessage());
         } finally {
             session.close();
         }

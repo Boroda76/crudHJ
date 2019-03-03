@@ -1,18 +1,23 @@
 package service.impl;
 
 import dao.UserDAO;
+import dao.impl.UserDaoHibernateImpl;
 import exceptions.UserException;
 import factory.AbstractFactory;
+import factory.AbstractFactoryCfg;
 import model.User;
 import service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private UserDAO dao;
 
     private UserServiceImpl() {
-        this.dao = AbstractFactory.createUserDao();
+        Optional<AbstractFactory> factory=AbstractFactoryCfg.createFactory();
+        //if not specified factory property set default hibernate realisation
+        this.dao = factory.map(AbstractFactory::createUserDao).orElse(UserDaoHibernateImpl.getInstance());
     }
 
     public static UserService getInstance() {
@@ -40,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user) throws UserException{
         dao.updateUser(user);
     }
 

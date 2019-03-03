@@ -15,7 +15,7 @@ public interface UserService {
 
     User getByLogin(String login) throws UserException;
 
-    void updateUser(User user);
+    void updateUser(User user) throws UserException;
 
     void createUser(User user) throws UserException;
 }
